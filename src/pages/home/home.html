@@ -1,0 +1,84 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <button ion-button menuToggle end>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>Home Page</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content class="content" padding>
+    <!-- Pull to refresh -->
+    <ion-refresher (ionRefresh)="getLatestViews($event)">
+        <ion-refresher-content pullingText="Pull to refresh"
+                               refreshingText="Refreshing..."></ion-refresher-content>
+    </ion-refresher>
+
+    <!-- option buttons -->
+    <button class="leftButton" ion-button icon-left (click)="filterMenuPopover($event)">
+        <ion-icon name="search"></ion-icon>
+        Search
+    </button>
+    <button class="rightButton" ion-button icon-right end (click)="optionsMenuPopover($event)">
+        Options
+        <ion-icon name="menu"></ion-icon>
+    </button>
+    <!-- Article list -->
+    <!--<div>-->
+    <!--<ion-list>-->
+    <!--<ion-item>ABC</ion-item>-->
+    <!--<ion-item>ABC</ion-item>-->
+    <!--<ion-item>ABC</ion-item>-->
+    <!--<ion-item>ABC</ion-item>-->
+    <!--</ion-list>-->
+    <!--</div>-->
+
+    <div>
+        <ion-card *ngFor="let view of views; let i = index" (click)="goToDetail($event, i)">
+            <!--this is kinda' cool, a picture above every card-->
+            <!--img *ngIf="article.artworkURL" [src]="article.artworkURL"/-->
+            <ion-card-content>
+                <div class="thumbContainer">
+                    <img class="thumbnail" *ngIf="!view.field_photo"
+                         [src]="'assets/images/avatar.png'"/>
+                    <img class="thumbnail" *ngIf="view.field_photo"
+                         [src]="domain + view.field_photo"/>
+                </div>
+
+                <div>
+                    <ion-card-title>{{ view.title | decodeHtmlEntities }}</ion-card-title>
+                    <ion-badge class="rightButton" color=danger *ngIf="!view.readed">New</ion-badge>
+                    <div>{{ view.field_service }}</div>
+                    <!--p>Article ID {{ article.id }}</p-->
+                    <p>{{ view.field_channel }}</p>
+                    <p>{{ view.field_date }}</p>
+                    <!--p>Feed: {{article.feedID}}</p-->
+                </div>
+                <button ion-button icon-only clear float-right class="important favourite_btn"
+                        (click)="toggleFavourite(i)">
+                    <ion-icon name="star" *ngIf="view.favorite"></ion-icon>
+                    <ion-icon name='star-outline' *ngIf="!view.favorite"></ion-icon>
+                </button>
+            </ion-card-content>
+        </ion-card>
+
+        <!-- infinite scroll -->
+        <ion-infinite-scroll (ionInfinite)="doInfinite($event)" threshold="20%"
+                             *ngIf="this.pagination.loadedAll == false">
+            <ion-infinite-scroll-content
+                    loadingText="Loading more articles...">
+            </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+    </div>
+
+    <div>
+
+        <!-- buttons to be removed after development -->
+        <!--<button ion-button codlor="secondary" (click)="alert('notifications')">set local notification</button>-->
+        <!--<button ion-button color="danger" (click)="alert('Delete message')">Delete Database</button>-->
+    </div>
+
+</ion-content>
+
+
+
